@@ -13,11 +13,16 @@
 
   const { generateId, getSelectionContext } = helpers;
 
+  const HIGHLIGHT_SELECTOR = ".noto-highlight";
+
   const state = {
     highlightColor: "#fadc4d",
     aiBuddyEnabled: true,
     highlights: new Map(),
     buddy: null,
+    pendingHighlights: new Map(),
+    domObserver: null,
+    retryTimer: null,
   };
 
   const highlighter = createHighlighter({
@@ -48,6 +53,7 @@
     }
 
     await restoreHighlights();
+    ensureDomObserver();
 
     if (state.aiBuddyEnabled) {
       initBuddy();
@@ -126,6 +132,8 @@
     highlightData.range = result.serializedRange;
     const saved = await storage.saveHighlight(highlightData);
     state.highlights.set(saved.id, saved);
+    state.pendingHighlights.delete(saved.id);
+    ensureDomObserver();
     toolbar.hide();
     state.buddy?.updateMessage?.();
     chrome.runtime.sendMessage({ type: "noto:highlight:created" }).catch(() => {});
@@ -150,12 +158,15 @@
   }
 
   async function restoreHighlights() {
+    state.highlights.clear();
+    state.pendingHighlights.clear();
     const highlights = await storage.getHighlights(location.href.split("#")[0]);
-    const attached = highlights.filter((highlight) =>
-      highlighter.applyStoredHighlight(highlight)
-    );
-    attached.forEach((highlight) => {
-      state.highlights.set(highlight.id, highlight);
+    highlights.forEach((highlight) => {
+      if (ensureHighlightOnPage(highlight)) {
+        state.highlights.set(highlight.id, highlight);
+      } else {
+        queueHighlightRetry(highlight);
+      }
     });
     state.buddy?.updateMessage?.();
   }
@@ -188,6 +199,8 @@
     await storage.removeHighlight(id);
     highlighter.removeHighlight(id);
     state.highlights.delete(id);
+    state.pendingHighlights.delete(id);
+    ensureDomObserver();
     state.buddy?.updateMessage?.();
   }
 
@@ -209,6 +222,7 @@
 
     if (changes.highlights) {
       syncHighlightsFromStorage(changes.highlights.newValue || {});
+      ensureDomObserver();
     }
   }
 
@@ -222,13 +236,23 @@
       }
     });
 
+    state.pendingHighlights.forEach((_highlight, id) => {
+      if (!currentIds.has(id)) {
+        state.pendingHighlights.delete(id);
+      }
+    });
+
     Object.values(storageMap).forEach((highlight) => {
-      highlighter.removeHighlight(highlight.id);
-      state.highlights.set(highlight.id, highlight);
-      highlighter.applyStoredHighlight(highlight);
+      if (ensureHighlightOnPage(highlight)) {
+        state.highlights.set(highlight.id, highlight);
+        state.pendingHighlights.delete(highlight.id);
+      } else {
+        queueHighlightRetry(highlight);
+      }
     });
 
     state.buddy?.updateMessage?.();
+    ensureDomObserver();
   }
 
   function initBuddy() {
@@ -256,5 +280,78 @@
     } catch (error) {
       window.alert(error.message || "Unable to summarize right now.");
     }
+  }
+
+  function ensureHighlightOnPage(highlight) {
+    const existing = document.querySelector(
+      `${HIGHLIGHT_SELECTOR}[data-noto-id="${highlight.id}"]`
+    );
+    if (existing) {
+      highlighter.updateHighlightElement(highlight);
+      return true;
+    }
+    return highlighter.applyStoredHighlight(highlight);
+  }
+
+  function queueHighlightRetry(highlight) {
+    state.pendingHighlights.set(highlight.id, highlight);
+    scheduleRetry();
+    ensureDomObserver();
+  }
+
+  function scheduleRetry() {
+    if (state.retryTimer) {
+      return;
+    }
+    state.retryTimer = setTimeout(() => {
+      state.retryTimer = null;
+      retryPendingHighlights();
+    }, 400);
+  }
+
+  function retryPendingHighlights() {
+    if (!state.pendingHighlights.size) {
+      teardownDomObserver();
+      return;
+    }
+
+    state.pendingHighlights.forEach((highlight, id) => {
+      if (ensureHighlightOnPage(highlight)) {
+        state.highlights.set(id, highlight);
+        state.pendingHighlights.delete(id);
+      }
+    });
+
+    if (!state.pendingHighlights.size) {
+      teardownDomObserver();
+    } else {
+      scheduleRetry();
+    }
+  }
+
+  function ensureDomObserver() {
+    if (!state.pendingHighlights.size) {
+      teardownDomObserver();
+      return;
+    }
+    if (state.domObserver || !document.body) {
+      return;
+    }
+
+    const observer = new MutationObserver(() => scheduleRetry());
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+    state.domObserver = observer;
+  }
+
+  function teardownDomObserver() {
+    if (!state.domObserver) {
+      return;
+    }
+    state.domObserver.disconnect();
+    state.domObserver = null;
   }
 })();
