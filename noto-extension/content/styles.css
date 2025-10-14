@@ -1,0 +1,218 @@
+.noto-highlight {
+  background-color: #fadc4d;
+  padding: 0.1em 0;
+  border-radius: 3px;
+  transition: box-shadow 0.2s ease;
+}
+
+.noto-highlight:hover {
+  box-shadow: 0 0 0 3px rgba(250, 220, 77, 0.4);
+}
+
+.noto-toolbar {
+  position: absolute;
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  background: #111111;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 2147483647;
+  transform: translate(-50%, -120%);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  opacity: 1;
+}
+
+.noto-toolbar.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.noto-toolbar-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.noto-toolbar-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.noto-toolbar-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.noto-toolbar-btn[data-loading="true"]::after {
+  content: "...";
+}
+
+#noto-tooltip {
+  position: absolute;
+  min-width: 240px;
+  max-width: 320px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-size: 13px;
+  line-height: 1.4;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.25);
+  z-index: 2147483647;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(4px);
+}
+
+#noto-tooltip.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.noto-tooltip-body {
+  margin-bottom: 8px;
+}
+
+.noto-tooltip-text {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.noto-tooltip-summary {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.noto-tooltip-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.noto-tooltip-btn {
+  border: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #22c55e;
+  color: white;
+  transition: background 0.2s ease;
+}
+
+.noto-tooltip-btn:hover {
+  background: #16a34a;
+}
+
+.noto-tooltip-btn.noto-delete {
+  background: #ef4444;
+}
+
+.noto-tooltip-btn.noto-delete:hover {
+  background: #dc2626;
+}
+
+.noto-ai-buddy {
+  position: fixed;
+  bottom: 20px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+  z-index: 2147483647;
+  cursor: grab;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.noto-ai-buddy.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.noto-ai-buddy.dragging {
+  cursor: grabbing;
+  transform: scale(1.02);
+}
+
+.noto-ai-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #22d3ee);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  animation: notoBuddyIdle 4s ease-in-out infinite;
+}
+
+.noto-ai-avatar .noto-ai-eye {
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  margin: 0 4px;
+}
+
+.noto-ai-bubble {
+  max-width: 220px;
+}
+
+.noto-ai-message {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.noto-ai-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.noto-ai-btn {
+  border: none;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #2563eb;
+  color: white;
+  transition: background 0.2s ease;
+}
+
+.noto-ai-btn:hover {
+  background: #1d4ed8;
+}
+
+.noto-ai-btn.subtle {
+  background: rgba(15, 23, 42, 0.1);
+  color: #0f172a;
+}
+
+.noto-ai-btn.subtle:hover {
+  background: rgba(15, 23, 42, 0.18);
+}
+
+@keyframes notoBuddyIdle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Noto Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="dashboard__header">
+        <div>
+          <h1>Noto Notebook</h1>
+          <p class="dashboard__subtitle">
+            Review, filter, and export your highlights anywhere.
+          </p>
+        </div>
+        <div class="dashboard__header-actions">
+          <button id="summarizeAll" class="btn primary">Summarize All</button>
+          <button id="exportJson" class="btn secondary">Export JSON</button>
+          <button id="exportCsv" class="btn secondary">Export CSV</button>
+        </div>
+      </header>
+
+      <section class="filters">
+        <div class="filter">
+          <label for="siteFilter">Website</label>
+          <select id="siteFilter"></select>
+        </div>
+        <div class="filter">
+          <label for="colorFilter">Color</label>
+          <select id="colorFilter"></select>
+        </div>
+        <div class="filter">
+          <label for="dateFilter">Date</label>
+          <select id="dateFilter">
+            <option value="all">All time</option>
+            <option value="7">Last 7 days</option>
+            <option value="30">Last 30 days</option>
+          </select>
+        </div>
+        <div class="filter filter--search">
+          <label for="searchInput">Search</label>
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="Search text, notes, or summaries…"
+          />
+        </div>
+      </section>
+
+      <section class="dashboard__content">
+        <div id="highlightsList" class="highlights"></div>
+        <template id="highlightTemplate">
+          <article class="highlight-card">
+            <header class="highlight-card__header">
+              <span class="highlight-card__site"></span>
+              <time class="highlight-card__time"></time>
+            </header>
+            <p class="highlight-card__text"></p>
+            <div class="highlight-card__meta">
+              <div class="highlight-card__note"></div>
+              <div class="highlight-card__summary"></div>
+            </div>
+            <footer class="highlight-card__footer">
+              <div class="color-dot"></div>
+              <div class="highlight-card__actions">
+                <button data-action="edit" class="btn small">Edit Note</button>
+                <button data-action="summarize" class="btn small">Summarize</button>
+                <button data-action="rewrite" class="btn small">Rewrite Note</button>
+                <button data-action="delete" class="btn small danger">Delete</button>
+              </div>
+            </footer>
+          </article>
+        </template>
+      </section>
+    </main>
+
+    <dialog id="editDialog" class="dialog">
+      <form method="dialog" class="dialog__content">
+        <h2>Edit Note</h2>
+        <textarea id="editNoteInput" rows="5" placeholder="Update your note"></textarea>
+        <menu class="dialog__actions">
+          <button value="cancel" class="btn ghost">Cancel</button>
+          <button value="confirm" class="btn primary">Save</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <dialog id="loadingDialog" class="dialog dialog--loading">
+      <div class="spinner"></div>
+      <p>Working on it…</p>
+    </dialog>
+
+    <script type="module" src="dashboard.js"></script>
+  </body>
+</html>

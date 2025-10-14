@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Noto</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="popup">
+      <header class="popup__header">
+        <div class="popup__brand">
+          <span class="popup__logo">N</span>
+          <h1>Noto</h1>
+        </div>
+        <p class="popup__subtitle">Your AI-powered highlight assistant</p>
+      </header>
+
+      <section class="popup__section">
+        <label class="popup__label" for="highlightColor">Highlight color</label>
+        <div class="popup__control">
+          <input type="color" id="highlightColor" name="highlightColor" />
+          <span id="colorPreview">#fadc4d</span>
+        </div>
+      </section>
+
+      <section class="popup__section">
+        <div class="popup__toggle">
+          <input type="checkbox" id="aiBuddyToggle" />
+          <label for="aiBuddyToggle">
+            Enable AI Buddy
+            <small>Floating helper with quick tips and summaries.</small>
+          </label>
+        </div>
+      </section>
+
+      <section class="popup__section">
+        <label class="popup__label" for="apiKey">API key</label>
+        <div class="popup__api">
+          <input
+            type="password"
+            id="apiKey"
+            placeholder="sk-********************************"
+            autocomplete="off"
+          />
+          <button id="saveApiKey" class="popup__btn secondary">Save</button>
+        </div>
+        <small class="popup__hint">
+          Stored locally. Required for AI summaries and rewrites.
+        </small>
+      </section>
+
+      <div class="popup__actions">
+        <button id="openDashboard" class="popup__btn primary">
+          Open Dashboard
+        </button>
+        <button id="clearApiKey" class="popup__btn ghost">
+          Remove API key
+        </button>
+      </div>
+    </main>
+
+    <template id="toastTemplate">
+      <div class="toast">
+        <span class="toast__message"></span>
+      </div>
+    </template>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

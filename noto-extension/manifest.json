@@ -1,0 +1,65 @@
+{
+  "manifest_version": 3,
+  "name": "Noto - AI Highlights",
+  "version": "0.1.0",
+  "description": "AI-powered universal note-taking and highlighting assistant that keeps your insights organized across the web.",
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Open Noto",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content/contentScript.js"
+      ],
+      "css": [
+        "content/styles.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content/*.js",
+        "utils/*.js",
+        "assets/icons/*.png",
+        "assets/avatars/*.png",
+        "content/styles.css"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "options_ui": {
+    "page": "dashboard/index.html",
+    "open_in_tab": true
+  }
+}
