@@ -3,6 +3,7 @@ const DEFAULT_SETTINGS = {
   aiBuddyEnabled: true,
   aiMode: "chrome", // "chrome" for Built-in AI, "openai" for fallback
   apiKey: "", // Only needed for OpenAI fallback
+  theme: "light", // "light" or "dark"
 };
 
 // Chrome Built-in AI session managers

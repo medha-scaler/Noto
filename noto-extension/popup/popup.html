@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,16 +11,33 @@
       <header class="popup__header">
         <div class="popup__brand">
           <span class="popup__logo">N</span>
-          <h1>Noto</h1>
+          <div>
+            <h1>Noto</h1>
+            <p class="popup__subtitle">Your AI-powered highlight assistant</p>
+          </div>
         </div>
-        <p class="popup__subtitle">Your AI-powered highlight assistant</p>
+        <button id="themeToggle" class="theme-toggle" title="Toggle theme">
+          <span class="theme-toggle__icon">🌙</span>
+        </button>
       </header>
 
       <section class="popup__section">
         <label class="popup__label" for="highlightColor">Highlight color</label>
-        <div class="popup__control">
-          <input type="color" id="highlightColor" name="highlightColor" />
-          <span id="colorPreview">#fadc4d</span>
+        <div class="color-picker">
+          <div class="color-picker__presets">
+            <button class="color-preset" data-color="#fadc4d" style="background: #fadc4d" title="Yellow"></button>
+            <button class="color-preset" data-color="#86efac" style="background: #86efac" title="Green"></button>
+            <button class="color-preset" data-color="#93c5fd" style="background: #93c5fd" title="Blue"></button>
+            <button class="color-preset" data-color="#f9a8d4" style="background: #f9a8d4" title="Pink"></button>
+            <button class="color-preset" data-color="#fda4af" style="background: #fda4af" title="Rose"></button>
+            <button class="color-preset" data-color="#c4b5fd" style="background: #c4b5fd" title="Purple"></button>
+            <button class="color-preset" data-color="#fdba74" style="background: #fdba74" title="Orange"></button>
+            <button class="color-preset" data-color="#67e8f9" style="background: #67e8f9" title="Cyan"></button>
+          </div>
+          <div class="color-picker__custom">
+            <input type="color" id="highlightColor" name="highlightColor" />
+            <span id="colorPreview">#fadc4d</span>
+          </div>
         </div>
       </section>
 

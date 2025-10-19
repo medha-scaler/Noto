@@ -10,6 +10,8 @@ const aiStatusBadge = document.getElementById("aiModeBadge");
 const aiDetails = document.getElementById("aiDetails");
 const aiHint = document.getElementById("aiHint");
 const fallbackSection = document.getElementById("fallbackSection");
+const themeToggle = document.getElementById("themeToggle");
+const colorPresets = document.querySelectorAll(".color-preset");
 
 init();
 
@@ -19,11 +21,19 @@ async function init() {
     "aiBuddyEnabled",
     "apiKey",
     "aiMode",
+    "theme",
   ]);
 
+  // Set theme
+  const theme = settings.theme || "light";
+  document.documentElement.setAttribute("data-theme", theme);
+  updateThemeIcon(theme);
+
+  // Set highlight color
   if (settings.highlightColor) {
     colorInput.value = settings.highlightColor;
     colorPreview.textContent = settings.highlightColor;
+    updateColorPresetActive(settings.highlightColor);
   }
 
   aiBuddyToggle.checked = Boolean(settings.aiBuddyEnabled);
@@ -32,15 +42,54 @@ async function init() {
     apiKeyInput.value = settings.apiKey;
   }
 
+  // Event listeners
   colorInput.addEventListener("input", handleColorPreview);
   colorInput.addEventListener("change", handleColorSave);
   aiBuddyToggle.addEventListener("change", handleBuddyToggle);
   saveApiKeyButton.addEventListener("click", handleSaveApiKey);
   clearApiKeyButton.addEventListener("click", handleClearApiKey);
   openDashboardButton.addEventListener("click", openDashboard);
+  themeToggle.addEventListener("click", handleThemeToggle);
+
+  // Color preset listeners
+  colorPresets.forEach((preset) => {
+    preset.addEventListener("click", () => {
+      const color = preset.getAttribute("data-color");
+      colorInput.value = color;
+      colorPreview.textContent = color;
+      updateColorPresetActive(color);
+      handleColorSave({ target: { value: color } });
+    });
+  });
 
   // Check AI availability
   await checkAIStatus();
+}
+
+async function handleThemeToggle() {
+  const currentTheme = document.documentElement.getAttribute("data-theme");
+  const newTheme = currentTheme === "light" ? "dark" : "light";
+
+  document.documentElement.setAttribute("data-theme", newTheme);
+  updateThemeIcon(newTheme);
+  await chrome.storage.local.set({ theme: newTheme });
+
+  showToast(`${newTheme === "dark" ? "🌙" : "☀️"} ${newTheme.charAt(0).toUpperCase() + newTheme.slice(1)} mode enabled`);
+}
+
+function updateThemeIcon(theme) {
+  const icon = themeToggle.querySelector(".theme-toggle__icon");
+  icon.textContent = theme === "light" ? "🌙" : "☀️";
+}
+
+function updateColorPresetActive(color) {
+  colorPresets.forEach((preset) => {
+    if (preset.getAttribute("data-color") === color) {
+      preset.classList.add("active");
+    } else {
+      preset.classList.remove("active");
+    }
+  });
 }
 
 async function checkAIStatus() {

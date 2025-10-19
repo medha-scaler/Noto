@@ -12,145 +12,252 @@
 .noto-toolbar {
   position: absolute;
   display: flex;
-  gap: 6px;
-  padding: 6px;
-  border-radius: 999px;
-  background: #111111;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+              0 0 0 1px rgba(255, 255, 255, 0.05);
   z-index: 2147483647;
   transform: translate(-50%, -120%);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 1;
+  animation: notoToolbarSlideIn 0.3s ease-out;
+}
+
+@keyframes notoToolbarSlideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -100%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -120%) scale(1);
+  }
 }
 
 .noto-toolbar.hidden {
   opacity: 0;
   pointer-events: none;
+  transform: translate(-50%, -100%) scale(0.95);
 }
 
 .noto-toolbar-btn {
-  background: transparent;
-  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: inherit;
-  font-size: 16px;
+  font-size: 18px;
   cursor: pointer;
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: background 0.2s ease;
+  border-radius: 10px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.noto-toolbar-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(34, 211, 238, 0.3));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.noto-toolbar-btn:hover::before {
+  opacity: 1;
 }
 
 .noto-toolbar-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.noto-toolbar-btn:active {
+  transform: translateY(0) scale(0.95);
 }
 
 .noto-toolbar-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
-.noto-toolbar-btn[data-loading="true"]::after {
-  content: "...";
+.noto-toolbar-btn[data-loading="true"] {
+  animation: notoToolbarPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes notoToolbarPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 #noto-tooltip {
   position: absolute;
-  min-width: 240px;
-  max-width: 320px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: #0f172a;
-  color: #e2e8f0;
+  min-width: 260px;
+  max-width: 360px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.98);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f1f5f9;
   font-size: 13px;
-  line-height: 1.4;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.25);
+  line-height: 1.6;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4),
+              0 0 0 1px rgba(255, 255, 255, 0.05);
   z-index: 2147483647;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateY(4px);
+  animation: notoTooltipSlideIn 0.3s ease-out;
+}
+
+@keyframes notoTooltipSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(4px) scale(1);
+  }
 }
 
 #noto-tooltip.hidden {
   opacity: 0;
   pointer-events: none;
+  transform: translateY(-4px) scale(0.95);
 }
 
 .noto-tooltip-body {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .noto-tooltip-text {
   font-weight: 600;
-  margin-bottom: 4px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #ffffff;
+  line-height: 1.4;
 }
 
 .noto-tooltip-summary {
   font-size: 12px;
-  color: #94a3b8;
+  color: #cbd5e1;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border-left: 3px solid rgba(99, 102, 241, 0.5);
 }
 
 .noto-tooltip-actions {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   justify-content: flex-end;
 }
 
 .noto-tooltip-btn {
   border: none;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
   font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
-  background: #22c55e;
+  background: linear-gradient(135deg, #22c55e, #10b981);
   color: white;
-  transition: background 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .noto-tooltip-btn:hover {
-  background: #16a34a;
+  background: linear-gradient(135deg, #16a34a, #059669);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+}
+
+.noto-tooltip-btn:active {
+  transform: translateY(0);
 }
 
 .noto-tooltip-btn.noto-delete {
-  background: #ef4444;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
 }
 
 .noto-tooltip-btn.noto-delete:hover {
-  background: #dc2626;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
 .noto-ai-buddy {
   position: fixed;
-  bottom: 20px;
+  bottom: 24px;
   right: 24px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  border-radius: 16px;
-  padding: 12px;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
-  z-index: 2147483647;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 20px;
+  padding: 14px 18px;
+  box-shadow: 0 20px 50px rgba(99, 102, 241, 0.25),
+              0 0 0 1px rgba(255, 255, 255, 0.5);
+  z-index: 2147483646;
   cursor: grab;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: notoBuddySlideIn 0.5s ease-out;
+}
+
+@keyframes notoBuddySlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .noto-ai-buddy.hidden {
   opacity: 0;
   pointer-events: none;
+  transform: translateY(20px) scale(0.9);
 }
 
 .noto-ai-buddy.dragging {
   cursor: grabbing;
-  transform: scale(1.02);
+  transform: scale(1.05) rotate(2deg);
+  box-shadow: 0 25px 60px rgba(99, 102, 241, 0.35);
+}
+
+.noto-ai-buddy:hover {
+  box-shadow: 0 25px 60px rgba(99, 102, 241, 0.3);
+  transform: translateY(-2px);
 }
 
 .noto-ai-avatar {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: linear-gradient(135deg, #6366f1, #22d3ee);
   display: flex;
@@ -158,6 +265,28 @@
   align-items: center;
   position: relative;
   animation: notoBuddyIdle 4s ease-in-out infinite;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  flex-shrink: 0;
+}
+
+.noto-ai-avatar::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #22d3ee);
+  opacity: 0.3;
+  filter: blur(8px);
+  z-index: -1;
+  animation: notoBuddyGlow 2s ease-in-out infinite;
+}
+
+@keyframes notoBuddyGlow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
 }
 
 .noto-ai-avatar .noto-ai-eye {
@@ -166,16 +295,25 @@
   background: white;
   border-radius: 50%;
   margin: 0 4px;
+  animation: notoBuddyBlink 4s ease-in-out infinite;
+}
+
+@keyframes notoBuddyBlink {
+  0%, 48%, 52%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.1); }
 }
 
 .noto-ai-bubble {
-  max-width: 220px;
+  max-width: 240px;
+  flex: 1;
 }
 
 .noto-ai-message {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   font-size: 13px;
+  font-weight: 500;
   color: #1e293b;
+  line-height: 1.5;
 }
 
 .noto-ai-actions {
@@ -185,34 +323,44 @@
 
 .noto-ai-btn {
   border: none;
-  padding: 6px 10px;
-  border-radius: 999px;
+  padding: 7px 14px;
+  border-radius: 12px;
   font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
-  background: #2563eb;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
   color: white;
-  transition: background 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
 }
 
 .noto-ai-btn:hover {
-  background: #1d4ed8;
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.noto-ai-btn:active {
+  transform: translateY(0);
 }
 
 .noto-ai-btn.subtle {
-  background: rgba(15, 23, 42, 0.1);
-  color: #0f172a;
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+  box-shadow: none;
+  border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
 .noto-ai-btn.subtle:hover {
-  background: rgba(15, 23, 42, 0.18);
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.3);
 }
 
 @keyframes notoBuddyIdle {
-  0%,
-  100% {
+  0%, 100% {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
   }
 }
