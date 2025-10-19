@@ -3,13 +3,12 @@
     import(chrome.runtime.getURL("content/toolbar.js")),
     import(chrome.runtime.getURL("content/highlighter.js")),
     import(chrome.runtime.getURL("content/aiBuddy.js")),
-    import(chrome.runtime.getURL("content/modal.js")),
     import(chrome.runtime.getURL("utils/helpers.js")),
     import(chrome.runtime.getURL("utils/storage.js")),
     import(chrome.runtime.getURL("utils/ai.js")),
   ]);
 
-  const [{ Toolbar }, { createHighlighter }, { initAiBuddy }, { modal }, helpers, storage, ai] =
+  const [{ Toolbar }, { createHighlighter }, { initAiBuddy }, helpers, storage, ai] =
     MODULES;
 
   const { generateId, getSelectionContext } = helpers;
@@ -99,7 +98,7 @@
     let summary = "";
 
     if (mode === "note") {
-      const input = await modal.prompt("Add a note for this highlight:", baseData.text);
+      const input = window.prompt("Add a note for this highlight:", baseData.text);
       if (input === null) {
         return;
       }
@@ -112,7 +111,7 @@
         summary = await ai.summarizeText(baseData.text);
       } catch (error) {
         console.warn("[Noto] Summarize failed", error);
-        await modal.alert(error.message || "Summarization failed.");
+        window.alert(error.message || "Summarization failed.");
         toolbar.setLoading(false);
         return;
       }
@@ -141,7 +140,7 @@
 
     if (mode === "summarize") {
       toolbar.setLoading(false);
-      highlighter.updateHighlightElement(saved);
+    highlighter.updateHighlightElement(saved);
     }
   }
 
@@ -178,7 +177,7 @@
       return;
     }
 
-    const updatedNote = await modal.prompt("Update your note:", highlight.note || "");
+    const updatedNote = window.prompt("Update your note:", highlight.note || "");
     if (updatedNote === null) {
       return;
     }
@@ -193,8 +192,7 @@
     const highlight = state.highlights.get(id);
     if (!highlight) return;
 
-    const confirmed = await modal.confirm("Delete this highlight?");
-    if (!confirmed) {
+    if (!window.confirm("Delete this highlight?")) {
       return;
     }
 
@@ -266,7 +264,7 @@
 
   async function summarizePageHighlights() {
     if (!state.highlights.size) {
-      await modal.alert("Highlight something first for me to summarize!");
+      window.alert("Highlight something first for me to summarize!");
       return;
     }
 
@@ -278,9 +276,9 @@
       const result = await ai.summarizeText(
         `Summarize the following bullet points from a page in under 3 sentences:\n${combined}`
       );
-      await modal.alert(`Noto summary:\n\n${result}`);
+      window.alert(`Noto summary:\n\n${result}`);
     } catch (error) {
-      await modal.alert(error.message || "Unable to summarize right now.");
+      window.alert(error.message || "Unable to summarize right now.");
     }
   }
 
