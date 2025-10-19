@@ -6,6 +6,10 @@ const saveApiKeyButton = document.getElementById("saveApiKey");
 const clearApiKeyButton = document.getElementById("clearApiKey");
 const openDashboardButton = document.getElementById("openDashboard");
 const toastTemplate = document.getElementById("toastTemplate");
+const aiStatusBadge = document.getElementById("aiModeBadge");
+const aiDetails = document.getElementById("aiDetails");
+const aiHint = document.getElementById("aiHint");
+const fallbackSection = document.getElementById("fallbackSection");
 
 init();
 
@@ -14,6 +18,7 @@ async function init() {
     "highlightColor",
     "aiBuddyEnabled",
     "apiKey",
+    "aiMode",
   ]);
 
   if (settings.highlightColor) {
@@ -33,6 +38,80 @@ async function init() {
   saveApiKeyButton.addEventListener("click", handleSaveApiKey);
   clearApiKeyButton.addEventListener("click", handleClearApiKey);
   openDashboardButton.addEventListener("click", openDashboard);
+
+  // Check AI availability
+  await checkAIStatus();
+}
+
+async function checkAIStatus() {
+  try {
+    const response = await chrome.runtime.sendMessage({
+      type: "noto:ai:checkAvailability",
+    });
+
+    if (response && response.ok) {
+      const status = response.data;
+      updateAIStatusUI(status);
+    } else {
+      showAIError();
+    }
+  } catch (error) {
+    console.error("Failed to check AI status:", error);
+    showAIError();
+  }
+}
+
+function updateAIStatusUI(status) {
+  const { mode, chromeAI } = status;
+
+  if (mode === "chrome" && chromeAI.available) {
+    // Chrome Built-in AI is active
+    aiStatusBadge.innerHTML = `
+      <span class="ai-status__icon">✨</span>
+      <span class="ai-status__text">Chrome AI Active</span>
+    `;
+    aiStatusBadge.className = "ai-status__badge ai-status__badge--active";
+
+    const apis = [];
+    if (chromeAI.summarizer) apis.push("Summarizer");
+    if (chromeAI.rewriter) apis.push("Rewriter");
+    if (chromeAI.prompt) apis.push("Prompt");
+
+    aiDetails.innerHTML = `
+      <div class="ai-status__apis">
+        ${apis.map(api => `<span class="ai-status__api">${api}</span>`).join("")}
+      </div>
+    `;
+
+    aiHint.innerHTML =
+      "🔒 Using Chrome Built-in AI (Gemini Nano) - All processing happens on your device";
+    fallbackSection.style.display = "none";
+  } else {
+    // Fallback to OpenAI
+    aiStatusBadge.innerHTML = `
+      <span class="ai-status__icon">⚠️</span>
+      <span class="ai-status__text">OpenAI Fallback</span>
+    `;
+    aiStatusBadge.className = "ai-status__badge ai-status__badge--fallback";
+
+    aiDetails.innerHTML = `
+      <small>Chrome Built-in AI not available. Using OpenAI API.</small>
+    `;
+
+    aiHint.innerHTML =
+      "⚠️ Chrome Built-in AI unavailable. Enable it in chrome://flags/#optimization-guide-on-device-model";
+    fallbackSection.style.display = "block";
+  }
+}
+
+function showAIError() {
+  aiStatusBadge.innerHTML = `
+    <span class="ai-status__icon">❌</span>
+    <span class="ai-status__text">AI Unavailable</span>
+  `;
+  aiStatusBadge.className = "ai-status__badge ai-status__badge--error";
+  aiDetails.innerHTML = "";
+  aiHint.innerHTML = "Failed to check AI status. Please try reloading the extension.";
 }
 
 function handleColorPreview(event) {

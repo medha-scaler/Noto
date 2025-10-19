@@ -39,3 +39,11 @@ export async function updateHighlight(id, updates) {
 export async function removeHighlight(id) {
   return sendMessage("noto:storage:remove", { id });
 }
+
+export async function checkAIAvailability() {
+  return sendMessage("noto:ai:checkAvailability");
+}
+
+export async function reinitializeAI() {
+  return sendMessage("noto:ai:reinitialize");
+}

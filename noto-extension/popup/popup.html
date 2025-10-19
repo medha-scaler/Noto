@@ -35,7 +35,21 @@
       </section>
 
       <section class="popup__section">
-        <label class="popup__label" for="apiKey">API key</label>
+        <label class="popup__label">AI Status</label>
+        <div class="ai-status" id="aiStatus">
+          <div class="ai-status__badge" id="aiModeBadge">
+            <span class="ai-status__icon">🤖</span>
+            <span class="ai-status__text">Checking...</span>
+          </div>
+          <div class="ai-status__details" id="aiDetails"></div>
+        </div>
+        <small class="popup__hint" id="aiHint">
+          Using Chrome Built-in AI (Gemini Nano) for on-device processing
+        </small>
+      </section>
+
+      <section class="popup__section popup__section--collapsed" id="fallbackSection">
+        <label class="popup__label" for="apiKey">OpenAI API Key (Fallback)</label>
         <div class="popup__api">
           <input
             type="password"
@@ -46,7 +60,7 @@
           <button id="saveApiKey" class="popup__btn secondary">Save</button>
         </div>
         <small class="popup__hint">
-          Stored locally. Required for AI summaries and rewrites.
+          Only needed if Chrome Built-in AI is unavailable
         </small>
       </section>
 
